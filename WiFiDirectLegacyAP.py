@@ -303,7 +303,7 @@ def parse_interface_or_enum(f, namespaces):
     expecting_brace = False
     lines = []
     for l in f:
-        print "l", repr(l)
+        print("l", repr(l))
         l = l.strip()
         if (l == ""):
             continue
@@ -322,14 +322,14 @@ def parse_interface_or_enum(f, namespaces):
 
         elif (l == "{"):
             # Unexpected brace, must be a namespace
-            print namespaces
+            print(namespaces)
             continue
 
         elif (l == "}"):
             # Unexpected brace, must be a namespace or a declare
-            print "popping namespace", namespaces
+            print("popping namespace", namespaces)
             namespaces.pop()
-            print "popped namespace", namespaces
+            print("popped namespace", namespaces)
             continue
 
         elif (inside_braces and (enum is not None)):
@@ -384,7 +384,7 @@ def parse_interface_or_enum(f, namespaces):
                     ll += c
 
             l = ll
-            print "ll", repr(ll)
+            print("ll", repr(ll))
                     
             # XXX Add support for method split in two lines, eg Split() in
             #     collections.idl needs that (for now the .idl is modified so
@@ -421,7 +421,7 @@ def parse_interface_or_enum(f, namespaces):
             )
             assert m is not None
             if (m is not None):
-                print m.groupdict()
+                print(m.groupdict())
                 try:
                     methods = interface["methods"]
 
@@ -457,7 +457,7 @@ def parse_interface_or_enum(f, namespaces):
                     m.group("all_params"), 
                     re.VERBOSE
                 ):
-                    print mm.groupdict()
+                    print(mm.groupdict())
                     flags = []
                     param = {
                         "type": mm.group("param_type") + ("*" * mm.group("param_type_stars").count("*")),
@@ -468,7 +468,7 @@ def parse_interface_or_enum(f, namespaces):
                     all_param_flags = mm.group("all_param_flags")
                     all_param_flags = re.split(r"[[\],]", all_param_flags)
                     all_param_flags = filter(lambda s: s.strip() != "", all_param_flags)
-                    print all_param_flags
+                    print(all_param_flags)
                     flags.extend(all_param_flags)
                     
                 methods.append(method)
@@ -479,7 +479,7 @@ def parse_interface_or_enum(f, namespaces):
             # XXX Have a single path runtime_class initialization
             m = re.match(r"\s*\[?\s*uuid\(\s*([^)]*)\s*\)\s*\]?\s*", l)
             if (m is not None):
-                print "uuid", m.group(1)
+                print("uuid", m.group(1))
                 if (interface is None):
                     interface = {}
                     lines = []
@@ -494,7 +494,7 @@ def parse_interface_or_enum(f, namespaces):
 
             m = re.match(r"\s*\[?\s*exclusiveto\(\s*([^)]*)\s*\)\s*\]?\s*", l)
             if (m is not None):
-                print "exclusiveto", m.group(1)
+                print("exclusiveto", m.group(1))
                 if (interface is None):
                     interface = {}
                     lines = []
@@ -504,7 +504,7 @@ def parse_interface_or_enum(f, namespaces):
         
             m = re.match(r"\s*\[?\s*activatable\(\s*([^)]*)\s*\)\s*\]?\s*", l)
             if (m is not None):
-                print "activatable", m.group(1)
+                print("activatable", m.group(1))
                 if (runtime_class is None):
                     runtime_class = {}
                     lines = []
@@ -514,7 +514,7 @@ def parse_interface_or_enum(f, namespaces):
         
             m = re.match(r"\s*\[?\s*static\(\s*([^)]*)\s*\)\s*\]?\s*", l)
             if (m is not None):
-                print "static", m.group(1)
+                print("static", m.group(1))
                 if (runtime_class is None):
                     runtime_class = {}
                     lines = []
@@ -527,7 +527,7 @@ def parse_interface_or_enum(f, namespaces):
             # by ";"
             m = re.match(r"\s*runtimeclass\s+(\w+)", l)
             if ((m is not None) and (not l.endswith(";"))):
-                print "runtimeclass", m.group(1)
+                print("runtimeclass", m.group(1))
                 if (runtime_class is None):
                     runtime_class = {}
                     lines = []
@@ -543,26 +543,26 @@ def parse_interface_or_enum(f, namespaces):
 
             m = re.match(r"\s*namespace\s+(\w+)\s*[{]?\s*", l)
             if (m is not None):
-                print "pushing namespace", m.group(1), namespaces
+                print("pushing namespace", m.group(1), namespaces)
                 namespaces.append(m.group(1))
-                print "pushed namespace", namespaces
+                print("pushed namespace", namespaces)
                 continue
 
             m = re.match(r"\s*declare\s*", l)
             if (m is not None):
-                print "declare", namespaces
+                print("declare", namespaces)
                 # Insert declare as None namespaces so it can be popped when 
                 # finding a declare closing brace
-                print "pushing namespace"
+                print("pushing namespace")
                 namespaces.append(None)
-                print "pushed namespace", namespaces
+                print("pushed namespace", namespaces)
                 continue
 
             # XXX Trim intermediate spaces inside angles like it's done with
             #     types?
             m = re.match(r"\s*interface\s+(?P<interface_name>(\w|[< ,>])+)\s*:\s*(?P<parent_name>\w+)\s*", l)
             if (m is not None):
-                print "interface name", m.group("interface_name"), "parent name", m.group("parent_name")
+                print("interface name", m.group("interface_name"), "parent name", m.group("parent_name"))
                 interface.update({
                     "parent": m.group("parent_name"),
                     # XXX For now do strip on the name since there's no proper
@@ -580,7 +580,7 @@ def parse_interface_or_enum(f, namespaces):
 
             m = re.match(r"\s*enum\s+(?P<enum_name>\w+)\s*", l)
             if (m is not None):
-                print "enum name", m.group("enum_name")
+                print("enum name", m.group("enum_name"))
                 lines = []
                 enum_values = {}
                 enum = {
@@ -593,7 +593,7 @@ def parse_interface_or_enum(f, namespaces):
                 expecting_brace = True
                 continue
 
-            print "unmatched line", repr(l)
+            print("unmatched line", repr(l))
             assert not inside_braces or ((interface is None) and (enum is None) and (runtime_class is None))
 
     if (runtime_class is not None):
@@ -694,7 +694,7 @@ def generate_python_enum(g, enum):
     g.push_indent()
     g.append(['"""'] + enum["lines"] + ['"""'])
     
-    sorted_names = sorted(enum["values"], cmp= lambda a, b: cmp(enum["values"][a], enum["values"][b]))
+    sorted_names = sorted(enum["values"], key=lambda a: enum["values"][a])
     for name in sorted_names:
         value = enum["values"][name]
         # XXX Missing escaping other keywords?
@@ -1063,7 +1063,7 @@ def generate_python_interface(g, interface, type_mappings, generate_header, gene
 
 
 def generate_python(g, objs, type_mappings):
-    for obj in objs.itervalues():
+    for obj in objs.values():
         if (obj["type"] == "enum"):
             g.reset_indent()
             generate_python_enum(g, obj)
@@ -1073,17 +1073,17 @@ def generate_python(g, objs, type_mappings):
     # runtime classes and the runtime classes and the interfaces in the
     # methods
 
-    for obj in objs.itervalues():
+    for obj in objs.values():
         if (obj["type"] == "interface"):
             g.reset_indent()
             generate_python_interface(g, obj, type_mappings, True, False)
 
-    for obj in objs.itervalues():
+    for obj in objs.values():
         if (obj["type"] == "runtimeclass"):
             g.reset_indent()
             generate_python_runtime_class(g, obj, type_mappings)
 
-    for obj in objs.itervalues():
+    for obj in objs.values():
         if (obj["type"] == "interface"):
             g.reset_indent()
             generate_python_interface(g, obj, type_mappings, False, True)
@@ -1120,7 +1120,7 @@ def write_python_from_idls():
         all_entries = {}
         for filename in filenames:
             filepath = filename
-            print "parsing %r" % filepath
+            print("parsing %r" % filepath)
             entries = parse_idl_file(filepath)
             with open(os.path.join("_out", "idls", os.path.splitext(filename)[0] + ".json"), "w") as f:
                 json.dump(entries, f, indent=2, sort_keys=True)
@@ -1190,7 +1190,7 @@ def wlanapi_test():
     dwClientVersion.value = 2
 
     rc = WlanApi.WlanOpenHandle(dwClientVersion, None, pdwNegotiatedVersion, phClientHandle)
-    print rc
+    print(rc)
 
     # https://learn.microsoft.com/en-us/windows/win32/api/wlanapi/ns-wlanapi-wlan_interface_info
     class WLAN_INTERFACE_INFO(ctypes.Structure):
@@ -1218,12 +1218,12 @@ def wlanapi_test():
     pIfList = PWLAN_INTERFACE_INFO_LIST()
     rc = WlanApi.WlanEnumInterfaces(hClientHandle, None, ctypes.pointer(pIfList))
 
-    print rc
+    print(rc)
     IfList = pIfList[0]
-    print "Num Entries: %d" % IfList.dwNumberOfItems
-    for i in xrange(IfList.dwNumberOfItems):
+    print("Num Entries: %d" % IfList.dwNumberOfItems)
+    for i in range(IfList.dwNumberOfItems):
         InterfaceInfo = IfList.InterfaceInfo[i]
-        print "guid", InterfaceInfo.InterfaceGuid, "desc", InterfaceInfo.strInterfaceDescription, "state", InterfaceInfo.isState
+        print("guid", InterfaceInfo.InterfaceGuid, "desc", InterfaceInfo.strInterfaceDescription, "state", InterfaceInfo.isState)
 
 
     C_ENUM = ctypes.c_uint32
@@ -1257,9 +1257,9 @@ def wlanapi_test():
     # https://learn.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlanhostednetworkquerystatus
     rc = WlanApi.WlanHostedNetworkQueryStatus(hClientHandle, ctypes.pointer(status), None)
 
-    print status[0].HostedNetworkState.PeerMacAddress[0]
+    print(status[0].HostedNetworkState.PeerMacAddress[0])
 
-    print rc
+    print(rc)
 
     # http://www.rohitab.com/discuss/topic/43819-help-on-hosted-network-with-native-wifi/
 
@@ -1269,7 +1269,7 @@ def wlanapi_test():
     # https://learn.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlanhostednetworkstartusing
     reason = ctypes.c_uint32()
     rc = WlanApi.WlanHostedNetworkStartUsing(hClientHandle, ctypes.pointer(reason), None)
-    print hex(rc), reason
+    print(hex(rc), reason)
 
     # https://github.com/dfct/Inssidious/blob/master/InssidiousCore/Controllers/HostedNetworkController.cpp
 
@@ -1306,11 +1306,11 @@ def com_test():
             int(l[0], 16), 
             int(l[1], 16),
             int(l[2], 16),
-            tuple(int(l[3][i*2:i*2+2], 16) for i in xrange(len(l[3])/2))
+            tuple(int(l[3][i*2:i*2+2], 16) for i in range(len(l[3])//2))
         )
 
         guid = GUID(*data)
-        print "in", s, "out", str(guid)
+        print("in", s, "out", str(guid))
 
         return guid
 
@@ -1318,7 +1318,7 @@ def com_test():
     ole32=ctypes.WinDLL('Ole32.dll')
     
     hr = ole32.CoInitialize(None)
-    print "CoInitialize", hr
+    print("CoInitialize", hr)
 
     IID_IWiFiDirectAdvertisementPublisher = "B35A2D1A-9B1F-45D9-925A-694D66DF68EF"
     clsid = str_to_guid(IID_IWiFiDirectAdvertisementPublisher)
@@ -1355,7 +1355,7 @@ def winrt_test():
     RO_INIT_MULTITHREADED = 1
     hr = combase.RoInitialize(RO_INIT_MULTITHREADED)
     #hr = combase.RoInitialize(RO_INIT_SINGLETHREADED)
-    print "RoInitialize", hex(hr)
+    print("RoInitialize", hex(hr))
 
     # https://learn.microsoft.com/en-us/windows/win32/api/roapi/nf-roapi-roactivateinstance
     # https://learn.microsoft.com/en-us/cpp/cppcx/wrl/how-to-activate-and-use-a-windows-runtime-component-using-wrl?view=msvc-170
@@ -1364,7 +1364,7 @@ def winrt_test():
     # https://learn.microsoft.com/en-us/windows/win32/api/winstring/nf-winstring-windowscreatestring
     hstr = wintypes.HANDLE(None)
     hr = combase.WindowsCreateString(RuntimeClass_Windows_Foundation_Uri, len(RuntimeClass_Windows_Foundation_Uri), ctypes.byref(hstr))
-    print "WindowsCreateString", hex(hr), hex(hstr.value)
+    print("WindowsCreateString", hex(hr), hex(hstr.value))
 
     # See https://github.com/shanewholloway/comtypes/blob/master/docs/com_interfaces.txt
     # See https://github.com/enthought/comtypes/blob/main/comtypes/client/dynamic.py
@@ -1501,12 +1501,12 @@ def winrt_test():
     #print comtypes.GUID.from_progid("Windows.Foundation.Uri")
     factory = wintypes.POINTER(IUriRuntimeClassFactory)()
     hr = combase.RoGetActivationFactory(hstr, ctypes.byref(IID_IUriRuntimeClassFactory), ctypes.byref(factory))
-    print "RoGetActivationFactory", hex(hr)
+    print("RoGetActivationFactory", hex(hr))
     
     #factory = comtypes.cast(factory, wintypes.POINTER(IUriRuntimeClassFactory))
 
     hr = combase.WindowsDeleteString(hstr)
-    print "WindowsDeleteString", hex(hr)
+    print("WindowsDeleteString", hex(hr))
 
     #hstr = wintypes.HANDLE(None)
     #hr = factory.GetRuntimeClassName(ctypes.byref(hstr))
@@ -1516,7 +1516,7 @@ def winrt_test():
     hstr = wintypes.HANDLE(None)
     url = u"http://www.microsoft.com"
     hr = combase.WindowsCreateString(url, len(url), ctypes.byref(hstr))
-    print "WindowsCreateString", hex(hr), hex(hstr.value)
+    print("WindowsCreateString", hex(hr), hex(hstr.value))
     
     uri = ctypes.POINTER(IUriRuntimeClass)()
     #iface = wintypes.POINTER(IUriRuntimeClassFactory)()
@@ -1531,283 +1531,273 @@ def winrt_test():
     #     call the internal methods that don't pass self as argument instead
     
     hr = factory._IUriRuntimeClassFactory__com_CreateUri(hstr, ctypes.byref(uri))
-    print "CreateUri", hex(hr)
+    print("CreateUri", hex(hr))
 
     hr = combase.WindowsDeleteString(hstr)
-    print "WindowsDeleteString", hex(hr)
+    print("WindowsDeleteString", hex(hr))
 
     hr = uri._IUriRuntimeClass__com__get_Domain(ctypes.byref(hstr))
-    print "Domain", hex(hr)
+    print("Domain", hex(hr))
 
     length = wintypes.UINT()
     p = combase.WindowsGetStringRawBuffer(hstr, ctypes.byref(length))
-    print "WindowsGetStringRawBuffer", length, repr(ctypes.c_wchar_p(p))
+    print("WindowsGetStringRawBuffer", length, repr(ctypes.c_wchar_p(p)))
 
     # Calling the property on the instance also works
     hstr = uri.Domain
     length = wintypes.UINT()
     p = combase.WindowsGetStringRawBuffer(hstr, ctypes.byref(length))
-    print "WindowsGetStringRawBuffer", length, repr(ctypes.c_wchar_p(p))
+    print("WindowsGetStringRawBuffer", length, repr(ctypes.c_wchar_p(p)))
 
     hr = combase.WindowsDeleteString(hstr)
-    print "WindowsDeleteString", hex(hr)
+    print("WindowsDeleteString", hex(hr))
 
-def winrt_wifi():
-    # XXX Setting the threaded mode fails inside vscode debugger, looks like COM
-    #     is already initialized as single threaded in the debugger thread?
-    # XXX There used to be a VSCODE_PID but looks like sometimes this is not set, 
-    #     check any VSCODE_ env vars
-    vscode_envs = [k for k in os.environ if "VSCODE_" in k]
-    logger.info("vscode_envs %r", sorted(vscode_envs))
-    running_under_vscode = (len(vscode_envs) > 1)
-    if (running_under_vscode):
-        logger.info("Running in VS Code")
+class WiFiDirectAP(object):
+    """
+    Reusable, non-blocking WiFiDirect Legacy AP controller.
 
-    else:
-        # Set multithreaded flag before comtypes is loaded in this thread,
-        # otherwise will set single threaded and can't be changed after the fact
-        sys.coinit_flags = 0
-    import comtypes
+    Usage:
+        ap = WiFiDirectAP()
+        ssid, password = ap.start(ssid="MyNet", password="MyPass1234")
+        ...
+        ap.stop()
 
-    from wifidirect import HString, WiFiDirectAdvertisementPublisherStatus, \
-        WiFiDirectConnectionStatus, WiFiDirectConnectionRequest, AsyncStatus, \
-        IWiFiDirectDeviceStatics_s, WiFiDirectConnectionListener, \
-        WiFiDirectAdvertisementPublisher
+    Pass ssid/password as None to let Windows autogenerate them (returned
+    values reflect what was actually applied).
 
-    # Note this is redundant since it's done by comtypes when imported in this
-    # thread
-    #hr = comtypes.CoInitializeEx(0)
-    #print "CoInitializeEx", hr
+    This replaces the old winrt_wifi() free function (which blocked forever
+    in a sleep loop and read credentials from _out/ssid_password.txt) with a
+    start()/stop() API so a GUI event loop (e.g. tkinter) can drive it
+    instead of a CLI while-loop.
+    """
 
-    combase=ctypes.WinDLL('combase.dll')
-    # See https://stackoverflow.com/questions/16466641/how-to-declare-and-link-to-roinitialize-rouninitialize-rogetactivationfactory-an
-    # https://learn.microsoft.com/en-us/windows/win32/api/roapi/nf-roapi-roinitialize
-    RO_INIT_SINGLETHREADED = 0
-    RO_INIT_MULTITHREADED = 1
-    hr = combase.RoInitialize(RO_INIT_MULTITHREADED)
-    #hr = combase.RoInitialize(RO_INIT_SINGLETHREADED)
-    logger.info("RoInitialize %r", hex(hr))
+    def __init__(self):
+        self._publisher = None
+        self._connection_listener = None
+        self._connected_devices = {}
+        self._on_connection_change = None
+        self._initialized = False
 
-    connected_devices = {}
-    # Python 2.7 doesn't have nonlocal to allow nested functions overwriting
-    # outer scope variables, use a member variable inside a class instead of a
-    # straight object
-    # See https://stackoverflow.com/questions/8447947/is-it-possible-to-modify-a-variable-in-python-that-is-in-an-outer-enclosing-b
-    class nonlocal: pass
-    nonlocal.connection_listener = None
-
-    def on_publisher_status_changed(sender, args):
-        #type:(IWiFiDirectAdvertisementPublisher, IWiFiDirectAdvertisementPublisherStatusChangedEventArgs) -> comtypes.HRESULT
-        logger.info("sender %r args %s", sender, args)
-        # XXX Fix the wrapper so it returns the ENUM value directly
-        if (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Created):
-            logger.info("Created")
-        
-        elif (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Started):
-            logger.info("Started")
-            nonlocal.connection_listener = start_listener()
-
-        elif (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Stopped):
-            logger.info("Stopped")
+    def _init_com(self):
+        if (self._initialized):
+            return
+        # XXX Setting the threaded mode fails inside vscode debugger, looks like COM
+        #     is already initialized as single threaded in the debugger thread?
+        # XXX There used to be a VSCODE_PID but looks like sometimes this is not set,
+        #     check any VSCODE_ env vars
+        vscode_envs = [k for k in os.environ if "VSCODE_" in k]
+        logger.info("vscode_envs %r", sorted(vscode_envs))
+        running_under_vscode = (len(vscode_envs) > 1)
+        if (running_under_vscode):
+            logger.info("Running in VS Code")
 
         else:
-            logger.info("Unhandled status %d", args.Status.value)
+            # Set multithreaded flag before comtypes is loaded in this thread,
+            # otherwise will set single threaded and can't be changed after the fact
+            sys.coinit_flags = 0
+        import comtypes
 
-        return comtypes.hresult.S_OK
+        combase = ctypes.WinDLL('combase.dll')
+        # See https://stackoverflow.com/questions/16466641/how-to-declare-and-link-to-roinitialize-rouninitialize-rogetactivationfactory-an
+        # https://learn.microsoft.com/en-us/windows/win32/api/roapi/nf-roapi-roinitialize
+        RO_INIT_MULTITHREADED = 1
+        hr = combase.RoInitialize(RO_INIT_MULTITHREADED)
+        logger.info("RoInitialize %r", hex(hr))
 
-    def on_connection_status_changed(sender, args):
-        logger.info("sender %r args %r", sender, args)
+        self._initialized = True
 
-        # hr = sender->get_ConnectionStatus(&status);
-        status = sender.ConnectionStatus
+    def start(self, ssid=None, password=None):
+        """
+        Starts the WiFiDirect legacy access point. If ssid/password are
+        None, lets Windows autogenerate them. Returns (ssid, password)
+        actually applied, as plain python strings.
+        """
+        self._init_com()
 
-        if (status.value == WiFiDirectConnectionStatus.Connected):
-            logger.info("Connected")
-            print "Connected", HString(sender.DeviceId)
-        
-        elif (status.value == WiFiDirectConnectionStatus.Disconnected):
-            logger.info("Disconnected")
-            print "Disconnected", HString(sender.DeviceId)
+        import comtypes
+        from wifidirect import HString, WiFiDirectAdvertisementPublisherStatus, \
+            WiFiDirectConnectionStatus, WiFiDirectConnectionRequest, AsyncStatus, \
+            IWiFiDirectDeviceStatics_s, WiFiDirectConnectionListener, \
+            WiFiDirectAdvertisementPublisher
 
-            # hr = sender->get_DeviceId(deviceId.GetAddressOf());
-            deviceId = str(HString(sender.DeviceId))
-            logger.info("DeviceId %s", deviceId)
+        connected_devices = self._connected_devices
 
-            # auto itDevice = _connectedDevices.find(deviceId.GetRawBuffer(nullptr));
-            # auto itToken = _connectedDeviceStatusChangedTokens.find(deviceId.GetRawBuffer(nullptr));
-            # if (itToken != _connectedDeviceStatusChangedTokens.end())
-            # {
-            #    if (itDevice != _connectedDevices.end())
-            #    {
-            #        itDevice->second->remove_ConnectionStatusChanged(itToken->second);
-            #    }
-            #    _connectedDeviceStatusChangedTokens.erase(itToken);
-            # }
-            # if (itDevice != _connectedDevices.end())
-            # {
-            #    _connectedDevices.erase(itDevice);
-            # }
-            wfdDevice = connected_devices.pop(deviceId)
-            wfdDevice.OnConnectionStatusChanged = None
+        def on_publisher_status_changed(sender, args):
+            logger.info("sender %r args %s", sender, args)
+            if (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Created):
+                logger.info("Created")
 
-        return comtypes.hresult.S_OK
+            elif (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Started):
+                logger.info("Started")
+                self._connection_listener = start_listener()
 
-    def on_connection_completed(sender, args):
-        logger.info("sender %r args %s", sender, args)
+            elif (args.Status.value == WiFiDirectAdvertisementPublisherStatus.Stopped):
+                logger.info("Stopped")
 
-        logger.info("status %s", args.value)
+            else:
+                logger.info("Unhandled status %d", args.Status.value)
 
-        if (args.value == AsyncStatus.Completed):
-            logger.info("Completed")
-            
-            # hr = pHandler->GetResults(wfdDevice.GetAddressOf());
-            wfdDevice = sender.GetResults()
-            deviceId = str(HString(wfdDevice.DeviceId))
-            logger.info("Device Id %s", deviceId)
-            print "Connection completed", HString(wfdDevice.DeviceId)
+            return comtypes.hresult.S_OK
 
-            # XXX Missing Implementing
-            # hr = wfdDevice->GetConnectionEndpointPairs(endpointPairs.GetAddressOf());
-            # hr = endpointPairs->GetAt(0, endpointPair.GetAddressOf());
-            # hr = endpointPair->get_RemoteHostName(remoteHostName.GetAddressOf());
-            # hr = remoteHostName->get_DisplayName(remoteHostNameDisplay.GetAddressOf());
+        def on_connection_status_changed(sender, args):
+            logger.info("sender %r args %r", sender, args)
 
-            # EventRegistrationToken statusChangedToken;
-            # hr = wfdDevice->add_ConnectionStatusChanged(Callback<ConnectionStatusChangedHandler>([this](IWiFiDirectDevice* sender, IInspectable*) -> HRESULT
-            wfdDevice.OnConnectionStatusChanged = on_connection_status_changed
+            status = sender.ConnectionStatus
 
-            # hr = wfdDevice->get_DeviceId(deviceId.GetAddressOf());
-            # _connectedDevices.insert(std::make_pair(deviceId.GetRawBuffer(nullptr), wfdDevice));
-            # _connectedDeviceStatusChangedTokens.insert(std::make_pair(deviceId.GetRawBuffer(nullptr), statusChangedToken));
-            connected_devices[deviceId] = wfdDevice
+            if (status.value == WiFiDirectConnectionStatus.Connected):
+                logger.info("Connected %s", HString(sender.DeviceId))
+                if (self._on_connection_change is not None):
+                    self._on_connection_change(True, str(HString(sender.DeviceId)))
 
-        elif (args.value == AsyncStatus.Started):
-            logger.info("Started")
-            
-        elif (args.value == AsyncStatus.Canceled):
-            logger.info("Canceled")
+            elif (status.value == WiFiDirectConnectionStatus.Disconnected):
+                logger.info("Disconnected %s", HString(sender.DeviceId))
 
-        elif (args.value == AsyncStatus.Error):
-            logger.info("Error")
+                deviceId = str(HString(sender.DeviceId))
+                logger.info("DeviceId %s", deviceId)
 
-        return comtypes.hresult.S_OK
+                wfdDevice = connected_devices.pop(deviceId, None)
+                if (wfdDevice is not None):
+                    wfdDevice.OnConnectionStatusChanged = None
 
-    def on_connection_requested(sender, args):
-        #type:(IWiFiDirectAdvertisementPublisher, IWiFiDirectAdvertisementPublisherStatusChangedEventArgs) -> comtypes.HRESULT
-        logger.info("sender %r args %s", sender, args)
+                if (self._on_connection_change is not None):
+                    self._on_connection_change(False, deviceId)
 
-        # hr = args->GetConnectionRequest(request.GetAddressOf());
-        # hr = request->get_DeviceInformation(deviceInformation.GetAddressOf());
-        connection_request = wintypes.POINTER(WiFiDirectConnectionRequest)()
-        # XXX Fix comtypes passing self which forces to use the classmethod
-        args._IWiFiDirectConnectionRequestedEventArgs__com_GetConnectionRequest(ctypes.byref(connection_request))
-        device_information = connection_request.DeviceInformation
+            return comtypes.hresult.S_OK
 
-        logger.info("device id %s", HString(device_information.Id))
-        
-        # hr = GetActivationFactory(HStringReference(RuntimeClass_Windows_Devices_WiFiDirect_WiFiDirectDevice).Get(), &wfdStatics);
-        wfd_statics = IWiFiDirectDeviceStatics_s()
-        # hr = deviceInformation->get_Id(deviceId.GetAddressOf());
-        # hr = wfdStatics->FromIdAsync(deviceId.Get(), &asyncAction);
-        async_action = wfd_statics.FromIdAsync(device_information.Id)
-        # hr = asyncAction->put_Completed(Callback<FromIdAsyncHandler>([this](IAsyncOperation<WiFiDirectDevice*>* pHandler, AsyncStatus status) -> HRESULT
-        async_action.OnCompleted = on_connection_completed
+        def on_connection_completed(sender, args):
+            logger.info("sender %r args %s", sender, args)
+            logger.info("status %s", args.value)
 
-        return comtypes.hresult.S_OK
+            if (args.value == AsyncStatus.Completed):
+                logger.info("Completed")
 
-    def start_listener():
-        logger.info("")
-        # hr = Windows::Foundation::ActivateInstance(HStringReference(RuntimeClass_Windows_Devices_WiFiDirect_WiFiDirectConnectionListener).Get(), &_connectionListener);
-        listener = WiFiDirectConnectionListener()
-        # hr = _connectionListener->add_ConnectionRequested(
-        #   Callback<ConnectionRequestedHandler>([this](IWiFiDirectConnectionListener* sender, IWiFiDirectConnectionRequestedEventArgs* args) -> HRESULT
-        listener.OnConnectionRequested = on_connection_requested
+                wfdDevice = sender.GetResults()
+                deviceId = str(HString(wfdDevice.DeviceId))
+                logger.info("Device Id %s", deviceId)
+                logger.info("Connection completed %s", deviceId)
 
-        # Local variable going out of scope will call __del__ and cause Release(),
-        # AddRef to counter that
-        # XXX Is there a way so comtypes doesn't Release local variables when they
-        #     are returned from the function? Does this also happen if local var is
-        #     set to None? (can't do here since it's the return value, though)
-        listener.AddRef()
+                wfdDevice.OnConnectionStatusChanged = on_connection_status_changed
+                connected_devices[deviceId] = wfdDevice
 
-        return listener
+            elif (args.value == AsyncStatus.Started):
+                logger.info("Started")
 
-    # hr = Windows::Foundation::ActivateInstance(HStringReference(RuntimeClass_Windows_Devices_WiFiDirect_WiFiDirectAdvertisementPublisher).Get(), &_publisher);
-    publisher = WiFiDirectAdvertisementPublisher()
+            elif (args.value == AsyncStatus.Canceled):
+                logger.info("Canceled")
 
-    # hr = _publisher->add_StatusChanged(
-    #   Callback<StatusChangedHandler>([this](IWiFiDirectAdvertisementPublisher* sender, IWiFiDirectAdvertisementPublisherStatusChangedEventArgs* args) -> HRESULT
-    publisher.OnStatusChanged = on_publisher_status_changed
-    # hr = _advertisement->put_IsAutonomousGroupOwnerEnabled(true);
-    publisher.Advertisement.IsAutonomousGroupOwnerEnabled = True
-    # hr = _publisher->get_Advertisement(_advertisement.GetAddressOf());
-    # hr = _advertisement->get_LegacySettings(_legacySettings.GetAddressOf());
-    # hr = _legacySettings->put_IsEnabled(true);
-    legacy_settings = publisher.Advertisement.LegacySettings
-    legacy_settings.IsEnabled = True
+            elif (args.value == AsyncStatus.Error):
+                logger.info("Error")
 
+            return comtypes.hresult.S_OK
+
+        def on_connection_requested(sender, args):
+            logger.info("sender %r args %s", sender, args)
+
+            connection_request = wintypes.POINTER(WiFiDirectConnectionRequest)()
+            args._IWiFiDirectConnectionRequestedEventArgs__com_GetConnectionRequest(ctypes.byref(connection_request))
+            device_information = connection_request.DeviceInformation
+
+            logger.info("device id %s", HString(device_information.Id))
+
+            wfd_statics = IWiFiDirectDeviceStatics_s()
+            async_action = wfd_statics.FromIdAsync(device_information.Id)
+            async_action.OnCompleted = on_connection_completed
+
+            return comtypes.hresult.S_OK
+
+        def start_listener():
+            logger.info("")
+            listener = WiFiDirectConnectionListener()
+            listener.OnConnectionRequested = on_connection_requested
+            # Local variable going out of scope will call __del__ and cause Release(),
+            # AddRef to counter that
+            listener.AddRef()
+            return listener
+
+        publisher = WiFiDirectAdvertisementPublisher()
+        publisher.OnStatusChanged = on_publisher_status_changed
+        publisher.Advertisement.IsAutonomousGroupOwnerEnabled = True
+        legacy_settings = publisher.Advertisement.LegacySettings
+        legacy_settings.IsEnabled = True
+
+        ssid_h = HString(ssid) if (ssid) else None
+        password_h = HString(password) if (password) else None
+
+        if (ssid_h is None):
+            ssid_h = HString(legacy_settings.Ssid)
+        else:
+            legacy_settings.Ssid = ssid_h
+
+        if (password_h is None):
+            password_h = HString(legacy_settings.Passphrase.Password)
+        else:
+            legacy_settings.Passphrase.Password = password_h
+
+        logger.info("Starting publisher")
+        publisher.Start()
+        logger.info("Started publisher")
+
+        self._publisher = publisher
+
+        return str(ssid_h), str(password_h)
+
+    def stop(self):
+        """
+        Stops the access point, if running. Safe to call multiple times.
+        """
+        if (self._publisher is None):
+            return
+
+        logger.info("Stopping publisher")
+        try:
+            self._publisher.Stop()
+        finally:
+            if (self._connection_listener is not None):
+                logger.info("Resetting OnConnectionRequested")
+                self._connection_listener.OnConnectionRequested = None
+                self._connection_listener = None
+
+            logger.info("Resetting OnStatusChanged")
+            self._publisher.OnStatusChanged = None
+            self._publisher = None
+            self._connected_devices.clear()
+
+            logger.info("Done")
+
+    @property
+    def is_running(self):
+        return (self._publisher is not None)
+
+
+def winrt_wifi():
+    """
+    Legacy CLI entry point, kept for backwards compatibility with the
+    original script. Reads optional credentials from
+    _out/ssid_password.txt, starts the AP, blocks forever, and stops
+    cleanly on Ctrl+C.
+    """
     ssid = None
     password = None
     config_filepath = os.path.join("_out", "ssid_password.txt")
     try:
         with open(config_filepath, "r") as f:
-            ssid, password = [HString(line.strip()) for line in f.readlines()]
-            
-    except:
-        logger.warn("Error reading %s, will use random ssid and password", config_filepath)
+            ssid, password = [line.strip() for line in f.readlines()]
 
-    # hr = _legacySettings->put_Ssid(hstrSSID.Get());
-    if (ssid is None):
-        ssid = HString(legacy_settings.Ssid)
-        
-    else:
-        legacy_settings.Ssid = ssid
+    except Exception:
+        logger.warning("Error reading %s, will use random ssid and password", config_filepath)
 
-    # hr = _legacySettings->get_Passphrase(passwordCredential.GetAddressOf());
-    # hr = passwordCredential->put_Password(hstrPassphrase.Get());
-    if (password is None):
-        password = HString(legacy_settings.Passphrase.Password)
-        
-    else:
-        legacy_settings.Passphrase.Password = password
-        
-    logger.info("Starting publisher")
-    # hr = _publisher->Start();
-    # This causes a QueryInterface for ITypedEventHandler {DE73CBA7-370D-550C-B23A-53DD0B4E480D}
-    # on AsyncOperationHandler
-    # This asks for
-    # - INoMarshall {ECC8691B-C1DB-4DC0-855E-65F6C551AF49}, should E_NOINTERFACE
-    # - ??????      {00000039-0000-0000-C000-000000000046}, should E_NOINTERFACE
-    # - IdentityUnmarshal {0000001B-0000-0000-C000-000000000046}, should E_NOINTERFACE
-    # - IAgileObject {94EA2B94-E9CC-49E0-C0FF-EE64CA8F5B90}, should S_OK
-    # And once publisher.Start() is called it asks for
-    # - ITypedEventHandler {DE73CBA7-370D-550C-B23A-53DD0B4E480D}
-    publisher.Start()
-    logger.info("Started publisher")
+    ap = WiFiDirectAP()
+    ssid, password = ap.start(ssid=ssid, password=password)
 
     try:
-        print "Sleeping forever, ssid '%s' password '%s' press ctrl+c to finish" % (ssid, password)
+        print("Sleeping forever, ssid '%s' password '%s' press ctrl+c to finish" % (ssid, password))
         while (True):
             time.sleep(50)
 
     finally:
-        logger.info("Stopping publisher")
-        publisher.Stop()
-        # XXX There's no cleanup needed as long as objects are not extra
-        #     AddRef'd and references are eventually del'ed since __del__ will
-        #     uninstall the respective handlers. Should this set some event
-        #     handlers to None explicitly for cleanliness? (right now __del__
-        #     may be called eg after the logger has been torn down so any
-        #     logging there fails with None accesses)
-        if (nonlocal.connection_listener is not None):
-            logger.info("Resetting OnConnectionRequested")
-            nonlocal.connection_listener.OnConnectionRequested = None
-        logger.info("Resetting OnStatusChanged")
-        publisher.OnStatusChanged = None
-            
-        logger.info("Done")
-    
-    
+        ap.stop()
+
+
 if (__name__ == "__main__"):
     log_level = logging.WARNING
     #log_level = logging.DEBUG
@@ -1815,7 +1805,7 @@ if (__name__ == "__main__"):
     comtypes_logger.setLevel(log_level)
     wrtc_logger.setLevel(log_level)
     logger.setLevel(log_level)
-    
+
     if ((len(sys.argv) > 1) and ("build" in sys.argv[1])):
         # Note there's no import wrtcommon or import wrtbase in the code
         # generation path, which avoids dependencies on files that haven't been

@@ -20,13 +20,13 @@ class HString(HSTRING):
         if (isinstance(s_or_hstr, HSTRING)):
             super(HString, self).__init__(s_or_hstr.value)
 
-        elif (isinstance(s_or_hstr, long)):
+        elif (isinstance(s_or_hstr, int)):
             # XXX Fix com methods returning long instead of HSTRING
             # XXX Fix HSTRING not promoting to string/HString
             super(HString, self).__init__(s_or_hstr)
     
         else:
-            u = unicode(s_or_hstr)
+            u = str(s_or_hstr)
             hr = combase.WindowsCreateString(u, len(u), ctypes.byref(self))
             logger.info("WindowsCreateString 0x%x 0x%x", hr, self.value)
 
